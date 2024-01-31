@@ -11,7 +11,7 @@ import ru.semen.springcourse.FirstSecurityApp.security.PersonDetails;
 
 import java.util.Optional;
 
-
+//данный клас нужен для идентификации (сравнение паролей и имен)
 @Service
 public class PersonDetailsService implements UserDetailsService {
 

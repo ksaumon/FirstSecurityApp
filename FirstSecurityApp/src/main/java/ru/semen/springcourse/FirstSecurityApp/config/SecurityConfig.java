@@ -47,8 +47,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/process_login")//по этому адресу спринг ждет данные формы
                 .defaultSuccessUrl("/hello", true)//указываем что будет происходить после
                 // успешной аунтификации(true означает что всегда перенапрявлять по адресу /hello)
-                .failureUrl("/auth/login?error");//если аунтификации не успешно перевод на адрес
+                .failureUrl("/auth/login?error")//если аунтификации не успешно перевод на адрес
                 //  /auth/login?error
+                .and()
+                .logout()// логаут это удаление пользователя из сесии и удаление куки из браузера
+                .logoutUrl("/logout")//url по переходе по которому будет производиться логаут
+                .logoutSuccessUrl("/auth/login");//url на который переходит пользователь при успешном логауте
+
     }
 
     // Настраивает аутентификацию

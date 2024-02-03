@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // конфигурируем авторизацию(дать доступ пользователю на основание его статуса к страцицам)
         http.csrf().disable()//отключаем защиту от межсайтовой потделки токинов
                 .authorizeRequests()
-                .antMatchers("/auth/login", "/error").permitAll()// на эти адреса/auth/login и /error-пускаем всех
+                .antMatchers("/auth/login", "/auth/registration","/error").permitAll()// на эти адреса/auth/login и /error-пускаем всех
                 .anyRequest().authenticated()// на остальные страници не пускаем не аунтифицированных пользователей
                 .and()//переходим к страничке логина
                 .formLogin().loginPage("/auth/login")//настраиваем форму для логина

@@ -39,8 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // конфигурируем Spring Security(какая страница отвечает за вход, какая за ошибки и.т.д)
         // конфигурируем авторизацию(дать доступ пользователю на основание его статуса к страцицам)
-        http.csrf().disable()//отключаем защиту от межсайтовой потделки токинов
-                .authorizeRequests()
+        http.authorizeRequests()
                 .antMatchers("/auth/login", "/auth/registration","/error").permitAll()// на эти адреса/auth/login и /error-пускаем всех
                 .anyRequest().authenticated()// на остальные страници не пускаем не аунтифицированных пользователей
                 .and()//переходим к страничке логина

@@ -3,6 +3,7 @@ package ru.semen.springcourse.FirstSecurityApp.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,6 +15,8 @@ import ru.semen.springcourse.FirstSecurityApp.services.PersonDetailsService;
 
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)// анатация указывающея спринг сикьюрети на ограничение ролелям доступ
+//с помощью навешивание анотации @PreAuthorize в сервисе
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    private final AuthProviderImpl authProvider;
@@ -40,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // конфигурируем Spring Security(какая страница отвечает за вход, какая за ошибки и.т.д)
         // конфигурируем авторизацию(дать доступ пользователю на основание его статуса к страцицам)
         http.authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")//для запроса на строницу /admin имеет достут полько ADMIN
+                //.antMatchers("/admin").hasRole("ADMIN")//для запроса на строницу /admin имеет достут полько ADMIN
                 .antMatchers("/auth/login", "/auth/registration","/error").permitAll()// на эти адреса/auth/login
                 // и /error-пускаем всех
                 .anyRequest().hasAnyRole("USER", "ADMIN")//для всех запросо имеют доступ "USER", "ADMIN"

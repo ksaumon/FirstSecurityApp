@@ -40,8 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // конфигурируем Spring Security(какая страница отвечает за вход, какая за ошибки и.т.д)
         // конфигурируем авторизацию(дать доступ пользователю на основание его статуса к страцицам)
         http.authorizeRequests()
-                .antMatchers("/auth/login", "/auth/registration","/error").permitAll()// на эти адреса/auth/login и /error-пускаем всех
-                .anyRequest().authenticated()// на остальные страници не пускаем не аунтифицированных пользователей
+                .antMatchers("/admin").hasRole("ADMIN")//для запроса на строницу /admin имеет достут полько ADMIN
+                .antMatchers("/auth/login", "/auth/registration","/error").permitAll()// на эти адреса/auth/login
+                // и /error-пускаем всех
+                .anyRequest().hasAnyRole("USER", "ADMIN")//для всех запросо имеют доступ "USER", "ADMIN"
                 .and()//переходим к страничке логина
                 .formLogin().loginPage("/auth/login")//настраиваем форму для логина
                 .loginProcessingUrl("/process_login")//по этому адресу спринг ждет данные формы

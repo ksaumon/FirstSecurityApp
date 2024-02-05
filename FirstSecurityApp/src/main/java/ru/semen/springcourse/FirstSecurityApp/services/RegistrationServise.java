@@ -26,6 +26,7 @@ public class RegistrationServise {
 //        String encodedPassword = passwordEncoder.encode(person.getPassword());
 //        person.setPassword(encodedPassword);// либо короче
         person.setPassword(passwordEncoder.encode(person.getPassword()));
+        person.setRole("ROLE_USER");
         peopleRepository.save(person);
     }
 }

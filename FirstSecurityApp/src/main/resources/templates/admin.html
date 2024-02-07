@@ -5,6 +5,12 @@
     <title> Админ</title>
 </head>
 <body>
+<a href="/hello">Нажми если есть права</a>
+<br/>
 Страничка администратора
+<br/>
+<form th:action="@{/logout}" th:method="POST">
+    <input type="submit" value="Logout" />
+</form>
 </body>
 </html>

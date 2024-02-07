@@ -2,15 +2,18 @@ package ru.semen.springcourse.FirstSecurityApp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import ru.semen.springcourse.FirstSecurityApp.security.AuthProviderImpl;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.semen.springcourse.FirstSecurityApp.services.PersonDetailsService;
 
 
@@ -33,16 +36,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //вместо того что бы внедрять AuthProviderImpl мы внедряем сразу PersonDetailsService
 
     private final PersonDetailsService personDetailsService;
+    private final JWTFilter jwtFilter;
 
     @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService) {
+    public SecurityConfig(PersonDetailsService personDetailsService, JWTFilter jwtFilter) {
         this.personDetailsService = personDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     protected void configure(HttpSecurity http) throws Exception {
         // конфигурируем Spring Security(какая страница отвечает за вход, какая за ошибки и.т.д)
         // конфигурируем авторизацию(дать доступ пользователю на основание его статуса к страцицам)
-        http.authorizeRequests()
+        http.csrf().disable()
+                .authorizeRequests()
                 //.antMatchers("/admin").hasRole("ADMIN")//для запроса на строницу /admin имеет достут полько ADMIN
                 .antMatchers("/auth/login", "/auth/registration","/error").permitAll()// на эти адреса/auth/login
                 // и /error-пускаем всех
@@ -57,7 +63,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()// логаут это удаление пользователя из сесии и удаление куки из браузера
                 .logoutUrl("/logout")//url по переходе по которому будет производиться логаут
-                .logoutSuccessUrl("/auth/login");//url на который переходит пользователь при успешном логауте
+                .logoutSuccessUrl("/auth/login")//url на который переходит пользователь при успешном логауте
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);//говорим спрингу о том что сессию сохранять
+                // ненужно
+                http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
@@ -71,4 +82,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }//шифрование через бикрипт
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }
